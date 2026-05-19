@@ -1,0 +1,1190 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>療癒捏捏雕塑</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101313;
+      --panel: #181d1a;
+      --panel-2: #232923;
+      --line: #3a4239;
+      --text: #f8efdd;
+      --muted: #bcb19e;
+      --accent: #e6bd72;
+      --green: #8dc6ad;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: #101313;
+      color: var(--text);
+      overflow: hidden;
+      /* 禁用雙擊放大，提升觸控體驗 */
+      touch-action: none; 
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(35, 41, 35, .92);
+      color: var(--text);
+      padding: 0 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, background-color 0.2s, transform 0.1s;
+    }
+
+    button:hover:not(:disabled) {
+      border-color: rgba(230, 189, 114, .82);
+    }
+    
+    button:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: #f2d18b;
+      color: #211706;
+      font-weight: 760;
+    }
+
+    button.ghost {
+      background: rgba(16, 19, 19, .58);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    button.icon {
+      width: 44px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    input[type="file"] {
+      position: fixed;
+      inset: auto;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .app {
+      height: 100%;
+      position: relative;
+      background:
+        radial-gradient(circle at 65% 15%, rgba(230, 189, 114, .12), transparent 32rem),
+        linear-gradient(135deg, #101313 0%, #171c18 62%, #22221a 100%);
+    }
+
+    .stage {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: stretch;
+    }
+
+    .camera-stage,
+    .sculpt-stage {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: stretch;
+      transition: opacity .3s ease, visibility .3s ease, transform .3s ease;
+    }
+
+    .camera-stage.inactive,
+    .sculpt-stage.inactive {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: scale(0.98);
+    }
+
+    .camera-frame,
+    .sculpture-shell {
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(248, 239, 221, .12);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #111514;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .36);
+    }
+
+    video,
+    #sculpture {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    video {
+      object-fit: cover;
+      transform: scaleX(-1);
+      background: #111514;
+    }
+
+    #sculpture {
+      touch-action: none;
+      cursor: grab;
+    }
+    
+    #sculpture:active {
+      cursor: grabbing;
+    }
+
+    .camera-empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      background:
+        radial-gradient(circle at 50% 35%, rgba(141, 198, 173, .12), transparent 18rem),
+        #111514;
+      transition: opacity 0.3s;
+    }
+    
+    .camera-empty.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .camera-empty b {
+      display: block;
+      color: var(--text);
+      font-size: clamp(26px, 5vw, 42px);
+      letter-spacing: 0;
+      margin-bottom: 6px;
+    }
+
+    .camera-empty p {
+      margin: 0;
+      line-height: 1.6;
+      font-size: clamp(14px, 3vw, 16px);
+      color: #c9d5cf;
+    }
+
+    .hud {
+      position: absolute;
+      z-index: 20;
+      top: max(12px, env(safe-area-inset-top));
+      left: max(12px, env(safe-area-inset-left));
+      right: max(12px, env(safe-area-inset-right));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .hud > * {
+      pointer-events: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(18px, 2.4vw, 28px);
+      letter-spacing: 0;
+      line-height: 1;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, .45);
+      white-space: nowrap;
+    }
+
+    .status {
+      max-width: min(44vw, 440px);
+      color: #dff5ea;
+      background: rgba(15, 18, 17, .62);
+      border: 1px solid rgba(141, 198, 173, .36);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: opacity 0.3s;
+    }
+
+    .camera-actions {
+      position: absolute;
+      z-index: 18;
+      left: 50%;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .shutter {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      padding: 0;
+      background: #f7efdf;
+      border: 6px solid rgba(230, 189, 114, .68);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, .4);
+    }
+
+    .shutter:disabled {
+      opacity: .5;
+    }
+
+    .sculpt-actions {
+      position: absolute;
+      z-index: 18;
+      left: 50%;
+      bottom: max(16px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .drawer-scrim {
+      position: absolute;
+      z-index: 28;
+      inset: 0;
+      background: rgba(0, 0, 0, .38);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .24s ease;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .drawer {
+      position: absolute;
+      z-index: 30;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: min(330px, calc(100vw - 38px));
+      padding: max(16px, env(safe-area-inset-top)) 14px max(16px, env(safe-area-inset-bottom));
+      background: rgba(16, 19, 18, .96);
+      border-right: 1px solid rgba(248, 239, 221, .1);
+      transform: translateX(-104%);
+      transition: transform .3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 24px 0 80px rgba(0, 0, 0, .4);
+    }
+
+    body.drawer-open .drawer {
+      transform: translateX(0);
+    }
+
+    body.drawer-open .drawer-scrim {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .drawer-head strong {
+      font-size: 18px;
+    }
+
+    .section {
+      display: grid;
+      gap: 9px;
+      border-top: 1px solid rgba(248, 239, 221, .08);
+      padding-top: 12px;
+    }
+
+    .section-title {
+      color: #eadfc9;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .control {
+      display: grid;
+      grid-template-columns: 54px 1fr 34px;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .control output {
+      color: #eee0c4;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .material-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .swatch {
+      height: 36px;
+      border: 2px solid rgba(255, 255, 255, .16);
+      box-shadow: inset 0 -12px 20px rgba(0, 0, 0, .18);
+      border-radius: 4px;
+    }
+
+    .swatch.active {
+      border-color: var(--accent);
+      outline: 2px solid rgba(230, 189, 114, .25);
+    }
+
+    #sourceCanvas {
+      display: none;
+    }
+
+    @media (max-width: 720px) {
+      .camera-frame,
+      .sculpture-shell {
+        inset: 0;
+        border-radius: 0;
+        border: 0;
+      }
+
+      .status {
+        display: none;
+      }
+
+      .brand {
+        max-width: calc(100vw - 78px);
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+
+      .camera-actions,
+      .sculpt-actions {
+        width: calc(100% - 28px);
+        justify-content: center;
+      }
+
+      .camera-actions button:not(.shutter),
+      .sculpt-actions button {
+        flex: 1;
+        max-width: 128px;
+      }
+
+      .shutter {
+        flex: 0 0 auto;
+        width: 70px;
+        height: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="stage">
+      <section id="cameraStage" class="camera-stage">
+        <div class="camera-frame">
+          <video id="video" playsinline muted style="display: none;"></video>
+          <div id="cameraEmpty" class="camera-empty">
+            <div>
+              <b>先拍一張</b>
+              <p>拍攝清晰的主體，並保持背景乾淨。<br>生成的立體雕塑會更生動！</p>
+            </div>
+          </div>
+        </div>
+        <div class="camera-actions">
+          <button id="openFile" class="ghost">相簿</button>
+          <button id="snapPhoto" class="shutter" aria-label="拍照" disabled></button>
+          <button id="startCamera" class="ghost">鏡頭</button>
+        </div>
+      </section>
+
+      <section id="sculptStage" class="sculpt-stage inactive">
+        <div class="sculpture-shell">
+          <canvas id="sculpture"></canvas>
+        </div>
+        <div class="sculpt-actions">
+          <button id="newPhoto" class="ghost">換照片</button>
+          <button id="downloadPng" class="ghost" disabled>下載</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="hud">
+      <div class="brand">
+        <button id="openDrawer" class="icon ghost" aria-label="打開設定">☰</button>
+        <h1>療癒捏捏雕塑</h1>
+      </div>
+      <div id="status" class="status">開鏡頭或選照片</div>
+    </div>
+
+    <div id="drawerScrim" class="drawer-scrim"></div>
+    <aside class="drawer" aria-label="設定">
+      <div class="drawer-head">
+        <strong>設定</strong>
+        <button id="closeDrawer" class="icon" aria-label="關閉">×</button>
+      </div>
+
+      <section class="section">
+        <div class="section-title">照片</div>
+        <div class="row">
+          <button id="drawerCamera">開鏡頭</button>
+          <button id="drawerFile">選照片</button>
+        </div>
+        <button id="randomSample">試玩範例</button>
+      </section>
+
+      <section class="section">
+        <div class="section-title">手感</div>
+        <label class="control">力道 <input id="strength" type="range" min="1" max="100" value="50"><output id="strengthOut">50</output></label>
+        <label class="control">範圍 <input id="radius" type="range" min="3" max="32" value="16"><output id="radiusOut">16</output></label>
+        <label class="control">回彈 <input id="bounce" type="range" min="0" max="100" value="90"><output id="bounceOut">90</output></label>
+        <label class="control">浮雕 <input id="relief" type="range" min="20" max="150" value="92"><output id="reliefOut">92</output></label>
+        <label class="control">光線 <input id="light" type="range" min="-80" max="80" value="-26"><output id="lightOut">-26</output></label>
+      </section>
+
+      <section class="section">
+        <div class="section-title">材質</div>
+        <div class="material-row">
+          <button class="swatch active" data-color="#ff9b9b" style="background:#ff9b9b" title="草莓果凍"></button>
+          <button class="swatch" data-color="#9be0ff" style="background:#9be0ff" title="汽水果凍"></button>
+          <button class="swatch" data-color="#b99361" style="background:#b99361" title="陶土"></button>
+          <button class="swatch" data-color="#d2c7b1" style="background:#d2c7b1" title="石膏"></button>
+          <button class="swatch" data-color="#8fb8a8" style="background:#8fb8a8" title="青瓷"></button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="row">
+          <button id="resetSculpture" disabled>重置</button>
+          <button id="drawerDownload" disabled>下載</button>
+        </div>
+      </section>
+    </aside>
+
+    <input id="fileInput" type="file" accept="image/*">
+    <canvas id="sourceCanvas"></canvas>
+  </div>
+
+  <script>
+    // 【平衡優化】100x100 是效能與細節的最佳平衡點
+    const gridW = 100;
+    const gridH = 100;
+    const totalPoints = gridW * gridH;
+    
+    // DOM Elements
+    const sculpture = document.querySelector("#sculpture");
+    const ctx = sculpture.getContext("2d", { alpha: false });
+    const video = document.querySelector("#video");
+    const sourceCanvas = document.querySelector("#sourceCanvas");
+    const sourceCtx = sourceCanvas.getContext("2d", { willReadFrequently: true });
+    
+    const ui = {
+      cameraStage: document.querySelector("#cameraStage"),
+      sculptStage: document.querySelector("#sculptStage"),
+      cameraEmpty: document.querySelector("#cameraEmpty"),
+      status: document.querySelector("#status"),
+      startCamera: document.querySelector("#startCamera"),
+      drawerCamera: document.querySelector("#drawerCamera"),
+      snapPhoto: document.querySelector("#snapPhoto"),
+      openFile: document.querySelector("#openFile"),
+      drawerFile: document.querySelector("#drawerFile"),
+      fileInput: document.querySelector("#fileInput"),
+      randomSample: document.querySelector("#randomSample"),
+      newPhoto: document.querySelector("#newPhoto"),
+      resetSculpture: document.querySelector("#resetSculpture"),
+      downloadPng: document.querySelector("#downloadPng"),
+      drawerDownload: document.querySelector("#drawerDownload"),
+      openDrawer: document.querySelector("#openDrawer"),
+      closeDrawer: document.querySelector("#closeDrawer"),
+      drawerScrim: document.querySelector("#drawerScrim"),
+      strength: document.querySelector("#strength"),
+      radius: document.querySelector("#radius"),
+      bounce: document.querySelector("#bounce"),
+      relief: document.querySelector("#relief"),
+      light: document.querySelector("#light"),
+      swatches: [...document.querySelectorAll(".swatch")]
+    };
+
+    // State
+    let heights = new Float32Array(totalPoints);
+    let baseHeights = new Float32Array(totalPoints);
+    let velocity = new Float32Array(totalPoints);
+    let hasSculpture = false;
+    let material = hexToRgb("#ff9b9b");
+    let angle = -0.68;
+    let tilt = 0.72;
+    let drag = null;
+    let cameraStream = null;
+    
+    // Object Pooling
+    const pointCache = new Array(totalPoints);
+    for (let i = 0; i < totalPoints; i++) {
+      pointCache[i] = { x: 0, y: 0, z: 0, gx: i % gridW, gy: Math.floor(i / gridW), depth: 0 };
+    }
+    
+    const cellsCache = new Array((gridW - 1) * (gridH - 1));
+    for (let i = 0; i < cellsCache.length; i++) {
+      cellsCache[i] = { p1: null, p2: null, p3: null, p4: null, depth: 0 };
+    }
+
+    // Initialization
+    bindRange(ui.strength, "#strengthOut");
+    bindRange(ui.radius, "#radiusOut");
+    bindRange(ui.bounce, "#bounceOut");
+    bindRange(ui.relief, "#reliefOut", render);
+    bindRange(ui.light, "#lightOut", render);
+
+    function bindRange(input, outputSelector, onInput = null) {
+      const output = document.querySelector(outputSelector);
+      const sync = () => {
+        output.value = input.value;
+        if (onInput && hasSculpture) onInput();
+      };
+      input.addEventListener("input", sync);
+      sync();
+    }
+
+    function setStatus(text) {
+      ui.status.textContent = text;
+    }
+
+    function toggleSettings(forceOpen) {
+      if (forceOpen === undefined) {
+        document.body.classList.toggle("drawer-open");
+      } else {
+        document.body.classList[forceOpen ? 'add' : 'remove']("drawer-open");
+      }
+    }
+
+    // Event Listeners
+    ui.openDrawer.addEventListener("click", () => toggleSettings(true));
+    ui.closeDrawer.addEventListener("click", () => toggleSettings(false));
+    ui.drawerScrim.addEventListener("click", () => toggleSettings(false));
+
+    ui.startCamera.addEventListener("click", startCameraStream);
+    ui.drawerCamera.addEventListener("click", () => {
+      toggleSettings(false);
+      showCamera();
+      startCameraStream();
+    });
+
+    ui.openFile.addEventListener("click", () => ui.fileInput.click());
+    ui.drawerFile.addEventListener("click", () => {
+      toggleSettings(false);
+      ui.fileInput.click();
+    });
+
+    ui.newPhoto.addEventListener("click", showCamera);
+
+    ui.snapPhoto.addEventListener("click", () => {
+      if (!video.videoWidth) return;
+      drawSource(video, video.videoWidth, video.videoHeight, true);
+      buildSculpture("照片已經轉為立體浮雕");
+    });
+
+    ui.fileInput.addEventListener("change", () => {
+      const file = ui.fileInput.files?.[0];
+      if (!file) return;
+      setStatus("處理圖片中...");
+      const img = new Image();
+      img.onload = () => {
+        drawSource(img, img.naturalWidth, img.naturalHeight, false);
+        buildSculpture("圖片已經轉為立體浮雕");
+        URL.revokeObjectURL(img.src);
+        ui.fileInput.value = "";
+      };
+      img.src = URL.createObjectURL(file);
+    });
+
+    ui.randomSample.addEventListener("click", () => {
+      toggleSettings(false);
+      makeSampleImage();
+      buildSculpture("範例載入完成，試著捏捏看吧！");
+    });
+
+    ui.resetSculpture.addEventListener("click", () => {
+      heights.set(baseHeights);
+      velocity.fill(0);
+      render();
+      setStatus("已恢復原狀");
+      toggleSettings(false);
+    });
+
+    ui.downloadPng.addEventListener("click", downloadImage);
+    ui.drawerDownload.addEventListener("click", () => {
+      toggleSettings(false);
+      downloadImage();
+    });
+
+    ui.swatches.forEach((button) => {
+      button.addEventListener("click", () => {
+        ui.swatches.forEach((item) => item.classList.toggle("active", item === button));
+        material = hexToRgb(button.dataset.color);
+        render();
+      });
+    });
+
+    // Core Logic
+    async function startCameraStream() {
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 960 } },
+          audio: false
+        });
+        video.srcObject = cameraStream;
+        await video.play();
+        video.style.display = "block";
+        ui.cameraEmpty.classList.add("hidden");
+        ui.snapPhoto.disabled = false;
+        setStatus("請將主體置中對焦，按下快門拍照");
+      } catch (error) {
+        setStatus("無法存取相機，請嘗試選擇相簿照片");
+      }
+    }
+
+    function showCamera() {
+      ui.cameraStage.classList.remove("inactive");
+      ui.sculptStage.classList.add("inactive");
+      setStatus("開啟鏡頭或選擇照片");
+      requestAnimationFrame(resizeCanvas);
+    }
+
+    function showSculpture() {
+      ui.cameraStage.classList.add("inactive");
+      ui.sculptStage.classList.remove("inactive");
+      requestAnimationFrame(resizeCanvas);
+    }
+
+    function drawSource(drawable, width, height, mirrored) {
+      const targetW = 560;
+      const targetH = 420;
+      sourceCanvas.width = targetW;
+      sourceCanvas.height = targetH;
+      sourceCtx.fillStyle = "#111";
+      sourceCtx.fillRect(0, 0, targetW, targetH);
+      const scale = Math.max(targetW / width, targetH / height);
+      const dw = width * scale;
+      const dh = height * scale;
+      
+      sourceCtx.save();
+      if (mirrored) {
+        sourceCtx.translate(targetW, 0);
+        sourceCtx.scale(-1, 1);
+      }
+      sourceCtx.drawImage(drawable, (targetW - dw) / 2, (targetH - dh) / 2, dw, dh);
+      sourceCtx.restore();
+      
+      if (cameraStream) {
+        cameraStream.getTracks().forEach((track) => track.stop());
+        cameraStream = null;
+        video.style.display = "none";
+      }
+    }
+
+    function makeSampleImage() {
+      sourceCanvas.width = 560;
+      sourceCanvas.height = 420;
+      const g = sourceCtx.createLinearGradient(0, 0, 560, 420);
+      g.addColorStop(0, "#efe2c9");
+      g.addColorStop(.55, "#91a196");
+      g.addColorStop(1, "#353d38");
+      sourceCtx.fillStyle = g;
+      sourceCtx.fillRect(0, 0, 560, 420);
+      
+      sourceCtx.save();
+      sourceCtx.translate(280, 214);
+      sourceCtx.fillStyle = "#d8c29f";
+      sourceCtx.beginPath();
+      sourceCtx.ellipse(0, -8, 104, 134, 0, 0, Math.PI * 2);
+      sourceCtx.fill();
+      sourceCtx.fillStyle = "#55483e";
+      sourceCtx.beginPath();
+      sourceCtx.ellipse(-38, -30, 13, 8, 0, 0, Math.PI * 2);
+      sourceCtx.ellipse(38, -30, 13, 8, 0, 0, Math.PI * 2);
+      sourceCtx.fill();
+      sourceCtx.strokeStyle = "#765d4b";
+      sourceCtx.lineWidth = 7;
+      sourceCtx.lineCap = "round";
+      sourceCtx.beginPath();
+      sourceCtx.moveTo(-18, 32);
+      sourceCtx.quadraticCurveTo(0, 48, 27, 31);
+      sourceCtx.stroke();
+      sourceCtx.strokeStyle = "#96735c";
+      sourceCtx.beginPath();
+      sourceCtx.moveTo(0, -14);
+      sourceCtx.quadraticCurveTo(-10, 12, 8, 18);
+      sourceCtx.stroke();
+      sourceCtx.fillStyle = "#4c4137";
+      sourceCtx.beginPath();
+      sourceCtx.ellipse(0, -116, 96, 36, 0, Math.PI, Math.PI * 2);
+      sourceCtx.fill();
+      sourceCtx.restore();
+    }
+
+    function buildSculpture(message) {
+      createHeightMapFromSource();
+      hasSculpture = true;
+      ui.resetSculpture.disabled = false;
+      ui.downloadPng.disabled = false;
+      ui.drawerDownload.disabled = false;
+      showSculpture();
+      setStatus(message);
+      render();
+    }
+
+    function createHeightMapFromSource() {
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = gridW;
+      tempCanvas.height = gridH;
+      const tctx = tempCanvas.getContext("2d", { willReadFrequently: true });
+      tctx.drawImage(sourceCanvas, 0, 0, gridW, gridH);
+      
+      const imgData = tctx.getImageData(0, 0, gridW, gridH).data;
+      const gray = new Float32Array(totalPoints);
+      
+      for (let i = 0; i < totalPoints; i++) {
+        const idx = i * 4;
+        gray[i] = (imgData[idx] * .2126 + imgData[idx + 1] * .7152 + imgData[idx + 2] * .0722) / 255;
+      }
+      
+      // 生成高度：恢復細節清晰度
+      for (let y = 0; y < gridH; y++) {
+        for (let x = 0; x < gridW; x++) {
+          const i = y * gridW + x;
+          const gx = sample(gray, x + 1, y) - sample(gray, x - 1, y);
+          const gy = sample(gray, x, y + 1) - sample(gray, x, y - 1);
+          
+          const edgeMag2 = gx * gx + gy * gy;
+          const edge = Math.min(1, Math.sqrt(edgeMag2) * 5.0); 
+          
+          const dx = (x / (gridW - 1) - .5) * 2;
+          const dy = (y / (gridH - 1) - .5) * 2;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          let dome = 0;
+          if (dist < 1) {
+            dome = Math.cos(dist * Math.PI * 0.5); 
+          }
+          
+          // 降低圓頂強度，提高照片 (gray) 的權重，讓細節更清晰
+          heights[i] = dome * 0.75 + (gray[i] - 0.4) * 0.7 + edge * 0.15;
+        }
+      }
+      
+      // 降低模糊次數 (從 8 降回 3)，保留照片的特徵，同時保持基本的圓滑
+      for (let pass = 0; pass < 3; pass++) blurHeights(heights, .4);
+      
+      baseHeights.set(heights);
+      velocity.fill(0);
+    }
+
+    function sample(arr, x, y) {
+      x = Math.max(0, Math.min(gridW - 1, x));
+      y = Math.max(0, Math.min(gridH - 1, y));
+      return arr[y * gridW + x];
+    }
+
+    function blurHeights(arr, amount) {
+      const copy = new Float32Array(arr);
+      const invAmount = 1 - amount;
+      for (let y = 1; y < gridH - 1; y++) {
+        const rowOffset = y * gridW;
+        for (let x = 1; x < gridW - 1; x++) {
+          const i = rowOffset + x;
+          const sum = copy[i] * 4 + 
+                      copy[i - 1] + copy[i + 1] + 
+                      copy[i - gridW] + copy[i + gridW] + 
+                      copy[i - gridW - 1] + copy[i - gridW + 1] + 
+                      copy[i + gridW - 1] + copy[i + gridW + 1];
+          arr[i] = copy[i] * invAmount + (sum / 12) * amount;
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      const rect = sculpture.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(320, Math.floor(rect.width * dpr));
+      const h = Math.max(320, Math.floor(rect.height * dpr));
+      
+      if (sculpture.width !== w || sculpture.height !== h) {
+        sculpture.width = w;
+        sculpture.height = h;
+        render();
+      }
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    requestAnimationFrame(resizeCanvas);
+
+    // Interaction handlers
+    sculpture.addEventListener("pointerdown", (event) => {
+      if (!hasSculpture) return;
+      sculpture.setPointerCapture(event.pointerId);
+      const point = toCanvasPoint(event);
+      drag = { lastX: point.x, lastY: point.y, startedAt: performance.now() };
+      applyUnifiedTool(point.x, point.y, 0, 0, true);
+    });
+
+    sculpture.addEventListener("pointermove", (event) => {
+      if (!drag || !hasSculpture) return;
+      const point = toCanvasPoint(event);
+      const dx = point.x - drag.lastX;
+      const dy = point.y - drag.lastY;
+      
+      angle += dx * .0012;
+      tilt = Math.max(.48, Math.min(1.04, tilt + dy * .00035));
+      
+      applyUnifiedTool(point.x, point.y, dx, dy, false);
+      
+      drag.lastX = point.x;
+      drag.lastY = point.y;
+    });
+
+    sculpture.addEventListener("pointerup", () => drag = null);
+    sculpture.addEventListener("pointercancel", () => drag = null);
+
+    function toCanvasPoint(event) {
+      const rect = sculpture.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left) * sculpture.width / rect.width,
+        y: (event.clientY - rect.top) * sculpture.height / rect.height
+      };
+    }
+
+    function applyUnifiedTool(px, py, dx, dy, isPress) {
+      const nearest = nearestGridPoint(px, py);
+      if (!nearest) return;
+      
+      const r = Number(ui.radius.value);
+      const r2 = r * r;
+      const power = Number(ui.strength.value) / 100;
+      
+      const dist2 = dx * dx + dy * dy;
+      const dist = Math.sqrt(dist2);
+      // 因應高解析度，調整動態範圍
+      const motion = Math.min(1, dist / 32);
+      
+      const dirX = dist === 0 ? 0 : dx / dist;
+      const dirY = dist === 0 ? 0 : dy / dist;
+      
+      const yStart = Math.max(1, nearest.gy - r);
+      const yEnd = Math.min(gridH - 1, nearest.gy + r);
+      const xStart = Math.max(1, nearest.gx - r);
+      const xEnd = Math.min(gridW - 1, nearest.gx + r);
+
+      for (let y = yStart; y < yEnd; y++) {
+        const rowOffset = y * gridW;
+        for (let x = xStart; x < xEnd; x++) {
+          const localX = x - nearest.gx;
+          const localY = y - nearest.gy;
+          
+          const d2 = localX * localX + localY * localY;
+          if (d2 > r2) continue;
+          
+          const d = Math.sqrt(d2);
+          const falloff = (Math.cos((d / r) * Math.PI) + 1) * 0.5;
+          const i = rowOffset + x;
+          
+          const avg = (heights[i - 1] + heights[i + 1] + heights[i - gridW] + heights[i + gridW]) * 0.25;
+          const front = localX * dirX + localY * dirY;
+          const rim = Math.max(0, front / Math.max(1, r));
+          
+          const pressAmount = (isPress ? .17 : .11) * power * falloff;
+          const rimAmount = rim * motion * power * falloff * .14;
+          
+          heights[i] -= pressAmount;
+          heights[i] += rimAmount;
+          
+          const smoothing = falloff * (.08 + motion * .28);
+          heights[i] = heights[i] * (1 - smoothing) + avg * smoothing;
+          
+          velocity[i] -= power * falloff * .025;
+          velocity[i] += rim * motion * power * falloff * .016;
+          velocity[i] *= .96;
+          
+          heights[i] = Math.max(-.75, Math.min(1.35, heights[i]));
+        }
+      }
+      render();
+    }
+
+    function nearestGridPoint(px, py) {
+      let best = null;
+      let bestD2 = Infinity;
+      
+      for (let i = 0; i < totalPoints; i += 2) { 
+        const point = pointCache[i];
+        if (!point) continue;
+        const dx = point.x - px;
+        const dy = point.y - py;
+        const d2 = dx * dx + dy * dy;
+        
+        if (d2 < bestD2) {
+          bestD2 = d2;
+          best = point;
+        }
+      }
+      const threshold = Math.max(sculpture.width, sculpture.height) * .15;
+      return bestD2 < (threshold * threshold) ? best : null;
+    }
+
+    function tickElasticity() {
+      if (!hasSculpture) return false;
+      const spring = Number(ui.bounce.value) / 100;
+      if (spring <= 0) return false;
+      
+      // 調整彈性係數與阻尼，讓它更像果凍一樣長時間震動 (低阻尼，即 damping 值高)
+      const k = .008 + spring * .042;
+      const damping = .80 + spring * .19; // 最高可達 0.99，帶來超強回彈感
+      let moving = false;
+      
+      for (let i = 0; i < totalPoints; i++) {
+        const diff = baseHeights[i] - heights[i];
+        const force = diff * k;
+        velocity[i] = (velocity[i] + force) * damping;
+        heights[i] += velocity[i];
+        
+        // 降低靜止閾值，讓微小的果凍抖動能持續更久
+        if ((velocity[i] < 0 ? -velocity[i] : velocity[i]) > .00003 || 
+            (diff < 0 ? -diff : diff) > .0003) {
+          moving = true;
+        }
+      }
+      return moving;
+    }
+
+    function render(force = false) {
+      if (!sculpture.width || !sculpture.height) return;
+      
+      ctx.fillStyle = "#111514";
+      ctx.fillRect(0, 0, sculpture.width, sculpture.height);
+      drawBackdrop();
+      
+      if (!hasSculpture && !force) return;
+
+      const scale = Math.min(sculpture.width, sculpture.height) * .0065;
+      const zScale = Number(ui.relief.value) * scale * .15;
+      const cx = sculpture.width * 0.5;
+      const cy = sculpture.height * 0.5 + sculpture.height * .02;
+      
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+
+      // 【效能優化】畫一個與材質同色的底盤，用來遮蔽網格間的細微縫隙，免去耗效能的 stroke
+      ctx.fillStyle = shadeColor(material, -0.3);
+      ctx.beginPath();
+      // 根據角度與傾斜度畫出底部遮罩
+      ctx.ellipse(cx, cy, scale * gridW * 0.65, scale * gridH * 0.65 * tilt, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Update 3D points in cache
+      for (let y = 0; y < gridH; y++) {
+        const ny = y - gridH * 0.5;
+        const rowOffset = y * gridW;
+        for (let x = 0; x < gridW; x++) {
+          const nx = x - gridW * 0.5;
+          const rx = nx * cos - ny * sin;
+          const ry = nx * sin + ny * cos;
+          
+          const idx = rowOffset + x;
+          const h = heights[idx];
+          const p = pointCache[idx];
+          
+          p.x = cx + rx * scale * 1.45;
+          p.y = cy + ry * scale * tilt - h * zScale;
+          p.z = h;
+          p.depth = ry + h * 14;
+        }
+      }
+
+      // 建立圓形遮罩範圍（去除背景方框邊緣，讓它看起來像是不規則黏土塊）
+      let activeCellCount = 0;
+      for (let y = 0; y < gridH - 1; y++) {
+        const rowOffset = y * gridW;
+        const nextRowOffset = (y + 1) * gridW;
+        for (let x = 0; x < gridW - 1; x++) {
+          
+          // 計算中心距離，做為去背遮罩
+          const nx = (x - gridW * 0.5 + 0.5) / (gridW * 0.5);
+          const ny = (y - gridH * 0.5 + 0.5) / (gridH * 0.5);
+          const r2 = nx*nx + ny*ny;
+          
+          // 加上一點點邊緣不規則形狀（模擬手工撕裂的黏土邊緣）
+          const borderNoise = Math.sin(Math.atan2(ny, nx) * 6) * 0.04;
+          const limit = 0.88 + borderNoise;
+          
+          if (r2 > limit * limit) continue; // 超過半徑的就不渲染（去背）
+
+          const c = cellsCache[activeCellCount++];
+          c.p1 = pointCache[rowOffset + x];
+          c.p2 = pointCache[rowOffset + x + 1];
+          c.p3 = pointCache[nextRowOffset + x + 1];
+          c.p4 = pointCache[nextRowOffset + x];
+          c.depth = (c.p1.depth + c.p2.depth + c.p3.depth + c.p4.depth) * 0.25;
+        }
+      }
+      
+      // 將沒用到的陣列元素推到最深處，避免影響 Sort 效能與視覺
+      for (let i = activeCellCount; i < cellsCache.length; i++) {
+        cellsCache[i].depth = 999999;
+      }
+      
+      cellsCache.sort((a, b) => a.depth - b.depth);
+
+      // Render cells (只渲染有效範圍內的)
+      const lightX = Number(ui.light.value) / 100;
+      for (let i = 0; i < activeCellCount; i++) {
+        const cell = cellsCache[i];
+        
+        const gx = (cell.p2.z - cell.p1.z) + (cell.p3.z - cell.p4.z);
+        const gy = (cell.p4.z - cell.p1.z) + (cell.p3.z - cell.p2.z);
+        
+        const diffuse = -gx * (1.4 + lightX) + gy * .52 + .12;
+        const specular = Math.pow(Math.max(0, diffuse + 0.3), 5) * 0.45; 
+        const shade = Math.max(-.65, Math.min(.95, diffuse + specular));
+        
+        ctx.beginPath();
+        ctx.moveTo(cell.p1.x, cell.p1.y);
+        ctx.lineTo(cell.p2.x, cell.p2.y);
+        ctx.lineTo(cell.p3.x, cell.p3.y);
+        ctx.lineTo(cell.p4.x, cell.p4.y);
+        ctx.closePath();
+        
+        // 移除 stroke，單純使用 fill 填色，解決嚴重卡頓問題
+        ctx.fillStyle = shadeColor(material, shade);
+        ctx.fill();
+      }
+
+      drawHighlights(activeCellCount);
+    }
+
+    function drawBackdrop() {
+      const w = sculpture.width;
+      const h = sculpture.height;
+      const grd = ctx.createRadialGradient(w * .52, h * .35, 20, w * .52, h * .35, w * .72);
+      grd.addColorStop(0, "#20251f");
+      grd.addColorStop(1, "#101313");
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, w, h);
+      
+      ctx.fillStyle = "rgba(230, 189, 114, .08)";
+      ctx.beginPath();
+      // 將陰影稍微往上拉，對應懸浮的感覺
+      ctx.ellipse(w * .5, h * .75, w * .32, h * .045, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 移除原本的底座繪製函數 (drawBase)
+
+    function drawHighlights(activeCellCount) {
+      ctx.save();
+      ctx.globalAlpha = .17;
+      ctx.strokeStyle = "#fff4d8";
+      ctx.lineWidth = Math.max(1, sculpture.width / 1200);
+      
+      for (let i = 0; i < activeCellCount; i += 17) {
+        const c = cellsCache[i];
+        if (c.p1.z < .42) continue;
+        ctx.beginPath();
+        ctx.moveTo((c.p1.x + c.p4.x) * 0.5, (c.p1.y + c.p4.y) * 0.5);
+        ctx.lineTo((c.p2.x + c.p3.x) * 0.5, (c.p2.y + c.p3.y) * 0.5);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function downloadImage() {
+      render(true);
+      const link = document.createElement("a");
+      link.download = "healing-sculpture.png";
+      link.href = sculpture.toDataURL("image/png");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function shadeColor(rgb, shade) {
+      const amount = shade >= 0 ? 255 : 0;
+      const mix = shade < 0 ? -shade : shade; 
+      return `rgb(${Math.round(rgb.r + (amount - rgb.r) * mix)}, ${Math.round(rgb.g + (amount - rgb.g) * mix)}, ${Math.round(rgb.b + (amount - rgb.b) * mix)})`;
+    }
+
+    function hexToRgb(hex) {
+      const clean = hex.replace("#", "");
+      return {
+        r: parseInt(clean.slice(0, 2), 16),
+        g: parseInt(clean.slice(2, 4), 16),
+        b: parseInt(clean.slice(4, 6), 16)
+      };
+    }
+
+    function animate() {
+      if (hasSculpture) {
+        const moving = tickElasticity();
+        if (!drag) angle += .0014;
+        
+        if (moving || !drag) {
+           render();
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
