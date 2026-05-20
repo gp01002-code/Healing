@@ -7,7 +7,7 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #101313;
+      --bg: #0d1010;
       --panel: #181d1a;
       --panel-2: #232923;
       --line: #3a4239;
@@ -18,27 +18,20 @@
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       width: 100%;
       height: 100%;
-      background: #101313;
+      background: #0d1010;
       color: var(--text);
       overflow: hidden;
-      /* 禁用雙擊放大與原生滑動，提升觸控體驗 */
-      touch-action: none; 
+      touch-action: none;
       overscroll-behavior: none;
     }
 
-    button,
-    input {
-      font: inherit;
-    }
+    button, input { font: inherit; }
 
     button {
       min-height: 40px;
@@ -49,17 +42,10 @@
       padding: 0 12px;
       cursor: pointer;
       transition: border-color 0.2s, background-color 0.2s, transform 0.1s;
-      /* 防止按鈕上的觸控手勢干擾 */
       touch-action: manipulation;
     }
-
-    button:hover:not(:disabled) {
-      border-color: rgba(230, 189, 114, .82);
-    }
-    
-    button:active:not(:disabled) {
-      transform: scale(0.96);
-    }
+    button:hover:not(:disabled) { border-color: rgba(230, 189, 114, .82); }
+    button:active:not(:disabled) { transform: scale(0.96); }
 
     button.primary {
       background: var(--accent);
@@ -82,15 +68,9 @@
       font-size: 20px;
     }
 
-    button:disabled {
-      cursor: not-allowed;
-      opacity: .45;
-    }
+    button:disabled { cursor: not-allowed; opacity: .45; }
 
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--accent);
-    }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
 
     input[type="file"] {
       position: fixed;
@@ -106,7 +86,7 @@
       position: relative;
       background:
         radial-gradient(circle at 65% 15%, rgba(230, 189, 114, .12), transparent 32rem),
-        linear-gradient(135deg, #101313 0%, #171c18 62%, #22221a 100%);
+        linear-gradient(135deg, #0d1010 0%, #161b17 62%, #1e1e17 100%);
     }
 
     .stage {
@@ -140,7 +120,7 @@
       border: 1px solid rgba(248, 239, 221, .12);
       border-radius: 8px;
       overflow: hidden;
-      background: #111514;
+      background: #0f1413;
       box-shadow: 0 30px 90px rgba(0, 0, 0, .36);
     }
 
@@ -155,20 +135,15 @@
       object-fit: cover;
       transform: scaleX(-1);
       background: #111514;
-      /* 加上黑白高對比濾鏡，模擬浮雕所需的明暗深度，幫助拍照預覽 */
       filter: grayscale(100%) contrast(150%) brightness(90%);
     }
 
     #sculpture {
-      /* 嚴格禁止 Canvas 上的原生滑動 */
       touch-action: none;
       overscroll-behavior: none;
       cursor: grab;
     }
-    
-    #sculpture:active {
-      cursor: grabbing;
-    }
+    #sculpture:active { cursor: grabbing; }
 
     .camera-empty {
       position: absolute;
@@ -183,12 +158,7 @@
         #111514;
       transition: opacity 0.3s;
     }
-    
-    .camera-empty.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
+    .camera-empty.hidden { opacity: 0; pointer-events: none; }
     .camera-empty b {
       display: block;
       color: var(--text);
@@ -196,7 +166,6 @@
       letter-spacing: 0;
       margin-bottom: 6px;
     }
-
     .camera-empty p {
       margin: 0;
       line-height: 1.6;
@@ -216,10 +185,7 @@
       gap: 10px;
       pointer-events: none;
     }
-
-    .hud > * {
-      pointer-events: auto;
-    }
+    .hud > * { pointer-events: auto; }
 
     .brand {
       display: flex;
@@ -273,10 +239,7 @@
       border: 6px solid rgba(230, 189, 114, .68);
       box-shadow: 0 12px 36px rgba(0, 0, 0, .4);
     }
-
-    .shutter:disabled {
-      opacity: .5;
-    }
+    .shutter:disabled { opacity: .5; }
 
     .sculpt-actions {
       position: absolute;
@@ -320,14 +283,8 @@
       box-shadow: 24px 0 80px rgba(0, 0, 0, .4);
     }
 
-    body.drawer-open .drawer {
-      transform: translateX(0);
-    }
-
-    body.drawer-open .drawer-scrim {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    body.drawer-open .drawer { transform: translateX(0); }
+    body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
 
     .drawer-head {
       display: flex;
@@ -335,10 +292,7 @@
       justify-content: space-between;
       gap: 8px;
     }
-
-    .drawer-head strong {
-      font-size: 18px;
-    }
+    .drawer-head strong { font-size: 18px; }
 
     .section {
       display: grid;
@@ -346,7 +300,6 @@
       border-top: 1px solid rgba(248, 239, 221, .08);
       padding-top: 12px;
     }
-
     .section-title {
       color: #eadfc9;
       font-size: 13px;
@@ -367,7 +320,6 @@
       color: var(--muted);
       font-size: 13px;
     }
-
     .control output {
       color: #eee0c4;
       text-align: right;
@@ -386,15 +338,12 @@
       box-shadow: inset 0 -12px 20px rgba(0, 0, 0, .18);
       border-radius: 4px;
     }
-
     .swatch.active {
       border-color: var(--accent);
       outline: 2px solid rgba(230, 189, 114, .25);
     }
 
-    #sourceCanvas {
-      display: none;
-    }
+    #sourceCanvas { display: none; }
 
     @media (max-width: 720px) {
       .camera-frame,
@@ -403,31 +352,19 @@
         border-radius: 0;
         border: 0;
       }
-
-      .status {
-        display: none;
-      }
-
-      .brand {
-        max-width: calc(100vw - 78px);
-      }
-
-      h1 {
-        font-size: 18px;
-      }
-
+      .status { display: none; }
+      .brand { max-width: calc(100vw - 78px); }
+      h1 { font-size: 18px; }
       .camera-actions,
       .sculpt-actions {
         width: calc(100% - 28px);
         justify-content: center;
       }
-
       .camera-actions button:not(.shutter),
       .sculpt-actions button {
         flex: 1;
         max-width: 128px;
       }
-
       .shutter {
         flex: 0 0 auto;
         width: 70px;
@@ -445,7 +382,7 @@
           <div id="cameraEmpty" class="camera-empty">
             <div>
               <b>先拍一張</b>
-              <p>拍攝清晰的主體，並保持背景乾淨。<br>黑白明暗對比越強烈，浮雕越立體！</p>
+              <p>拍攝清晰的主體,並保持背景乾淨。<br>黑白明暗對比越強烈,浮雕越立體!</p>
             </div>
           </div>
         </div>
@@ -493,11 +430,11 @@
 
       <section class="section">
         <div class="section-title">手感</div>
-        <label class="control">力道 <input id="strength" type="range" min="1" max="100" value="65"><output id="strengthOut">65</output></label>
-        <label class="control">範圍 <input id="radius" type="range" min="3" max="32" value="16"><output id="radiusOut">16</output></label>
-        <label class="control">回彈 <input id="bounce" type="range" min="0" max="100" value="90"><output id="bounceOut">90</output></label>
-        <label class="control">浮雕 <input id="relief" type="range" min="20" max="150" value="92"><output id="reliefOut">92</output></label>
-        <label class="control">光線 <input id="light" type="range" min="-80" max="80" value="-26"><output id="lightOut">-26</output></label>
+        <label class="control">力道 <input id="strength" type="range" min="1" max="100" value="78"><output id="strengthOut">78</output></label>
+        <label class="control">範圍 <input id="radius" type="range" min="3" max="32" value="14"><output id="radiusOut">14</output></label>
+        <label class="control">回彈 <input id="bounce" type="range" min="0" max="100" value="88"><output id="bounceOut">88</output></label>
+        <label class="control">浮雕 <input id="relief" type="range" min="20" max="200" value="125"><output id="reliefOut">125</output></label>
+        <label class="control">光線 <input id="light" type="range" min="-80" max="80" value="-32"><output id="lightOut">-32</output></label>
       </section>
 
       <section class="section">
@@ -527,14 +464,14 @@
     const gridW = 100;
     const gridH = 100;
     const totalPoints = gridW * gridH;
-    
+
     // DOM Elements
     const sculpture = document.querySelector("#sculpture");
     const ctx = sculpture.getContext("2d", { alpha: false });
     const video = document.querySelector("#video");
     const sourceCanvas = document.querySelector("#sourceCanvas");
     const sourceCtx = sourceCanvas.getContext("2d", { willReadFrequently: true });
-    
+
     const ui = {
       cameraStage: document.querySelector("#cameraStage"),
       sculptStage: document.querySelector("#sculptStage"),
@@ -568,20 +505,24 @@
     let velocity = new Float32Array(totalPoints);
     let hasSculpture = false;
     let material = hexToRgb("#ff9b9b");
-    let angle = 0; // 鎖定視角為正向，不再偏斜
-    let tilt = 0.95; // 微微的立體傾斜角，維持最佳觀賞角度
+
+    // ★ 改成完全平視:angle = 0、tilt = 1.0 (Y 軸不再壓縮)
+    const angle = 0;
+    const tilt = 1.0;
+
     let drag = null;
+    let cursorPos = null; // ★ 新增:目前指尖/滑鼠在 canvas 上的位置,用來繪製手指環指示器
     let cameraStream = null;
-    
+
     // Object Pooling
     const pointCache = new Array(totalPoints);
     for (let i = 0; i < totalPoints; i++) {
       pointCache[i] = { x: 0, y: 0, z: 0, gx: i % gridW, gy: Math.floor(i / gridW), depth: 0 };
     }
-    
+
     const cellsCache = new Array((gridW - 1) * (gridH - 1));
     for (let i = 0; i < cellsCache.length; i++) {
-      cellsCache[i] = { p1: null, p2: null, p3: null, p4: null, depth: 0 };
+      cellsCache[i] = { p1: null, p2: null, p3: null, p4: null, depth: 0, nx: 0, ny: 0, avgZ: 0 };
     }
 
     // Initialization
@@ -656,7 +597,7 @@
     ui.randomSample.addEventListener("click", () => {
       toggleSettings(false);
       makeSampleImage();
-      buildSculpture("範例載入完成，試著捏捏看吧！");
+      buildSculpture("範例載入完成,試著捏捏看吧!");
     });
 
     ui.resetSculpture.addEventListener("click", () => {
@@ -693,9 +634,9 @@
         video.style.display = "block";
         ui.cameraEmpty.classList.add("hidden");
         ui.snapPhoto.disabled = false;
-        setStatus("請將主體置中對焦，按下快門拍照");
+        setStatus("請將主體置中對焦,按下快門拍照");
       } catch (error) {
-        setStatus("無法存取相機，請嘗試選擇相簿照片");
+        setStatus("無法存取相機,請嘗試選擇相簿照片");
       }
     }
 
@@ -722,7 +663,7 @@
       const scale = Math.max(targetW / width, targetH / height);
       const dw = width * scale;
       const dh = height * scale;
-      
+
       sourceCtx.save();
       if (mirrored) {
         sourceCtx.translate(targetW, 0);
@@ -730,7 +671,7 @@
       }
       sourceCtx.drawImage(drawable, (targetW - dw) / 2, (targetH - dh) / 2, dw, dh);
       sourceCtx.restore();
-      
+
       if (cameraStream) {
         cameraStream.getTracks().forEach((track) => track.stop());
         cameraStream = null;
@@ -747,7 +688,7 @@
       g.addColorStop(1, "#353d38");
       sourceCtx.fillStyle = g;
       sourceCtx.fillRect(0, 0, 560, 420);
-      
+
       sourceCtx.save();
       sourceCtx.translate(280, 214);
       sourceCtx.fillStyle = "#d8c29f";
@@ -795,42 +736,50 @@
       tempCanvas.height = gridH;
       const tctx = tempCanvas.getContext("2d", { willReadFrequently: true });
       tctx.drawImage(sourceCanvas, 0, 0, gridW, gridH);
-      
+
       const imgData = tctx.getImageData(0, 0, gridW, gridH).data;
       const gray = new Float32Array(totalPoints);
-      
+
+      // ★ 對比度增強:讓暗的更暗、亮的更亮,提升浮雕的層次
       for (let i = 0; i < totalPoints; i++) {
         const idx = i * 4;
-        gray[i] = (imgData[idx] * .2126 + imgData[idx + 1] * .7152 + imgData[idx + 2] * .0722) / 255;
+        let g = (imgData[idx] * .2126 + imgData[idx + 1] * .7152 + imgData[idx + 2] * .0722) / 255;
+        // S-curve 對比強化
+        g = g < 0.5
+          ? 2 * g * g
+          : 1 - 2 * (1 - g) * (1 - g);
+        gray[i] = g;
       }
-      
-      // 生成高度：恢復細節清晰度
+
+      // ★ 改進的高度生成:平衡圓頂(讓物件像浮起的麵團)+ 灰階(主要立體感)+ 邊緣強化(輪廓清晰)
       for (let y = 0; y < gridH; y++) {
         for (let x = 0; x < gridW; x++) {
           const i = y * gridW + x;
           const gx = sample(gray, x + 1, y) - sample(gray, x - 1, y);
           const gy = sample(gray, x, y + 1) - sample(gray, x, y - 1);
-          
-          const edgeMag2 = gx * gx + gy * gy;
-          const edge = Math.min(1, Math.sqrt(edgeMag2) * 5.0); 
-          
+
+          const edgeMag = Math.sqrt(gx * gx + gy * gy);
+          const edge = Math.min(1, edgeMag * 4.5);
+
           const dx = (x / (gridW - 1) - .5) * 2;
           const dy = (y / (gridH - 1) - .5) * 2;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          
+
+          // 圓頂:用 (1 - dist^2) 而非 cos,基底更厚實,邊緣更柔順
           let dome = 0;
           if (dist < 1) {
-            dome = Math.cos(dist * Math.PI * 0.5); 
+            const t = 1 - dist * dist;
+            dome = t * t; // 平方一次得到更圓潤的橢球
           }
-          
-          // 降低圓頂強度，提高照片 (gray) 的權重，讓細節更清晰
-          heights[i] = dome * 0.75 + (gray[i] - 0.4) * 0.7 + edge * 0.15;
+
+          // 增加灰階權重(從 0.7 → 0.95),浮雕細節更明顯
+          heights[i] = dome * 0.55 + (gray[i] - 0.42) * 0.95 + edge * 0.22;
         }
       }
-      
-      // 降低模糊次數 (從 8 降回 3)，保留照片的特徵，同時保持基本的圓滑
-      for (let pass = 0; pass < 3; pass++) blurHeights(heights, .4);
-      
+
+      // ★ 四段式平滑:多一輪輕度模糊,徹底消除網格間的色斑感,但因為解析度沒變所以不會延遲
+      for (let pass = 0; pass < 4; pass++) blurHeights(heights, .35);
+
       baseHeights.set(heights);
       velocity.fill(0);
     }
@@ -848,10 +797,10 @@
         const rowOffset = y * gridW;
         for (let x = 1; x < gridW - 1; x++) {
           const i = rowOffset + x;
-          const sum = copy[i] * 4 + 
-                      copy[i - 1] + copy[i + 1] + 
-                      copy[i - gridW] + copy[i + gridW] + 
-                      copy[i - gridW - 1] + copy[i - gridW + 1] + 
+          const sum = copy[i] * 4 +
+                      copy[i - 1] + copy[i + 1] +
+                      copy[i - gridW] + copy[i + gridW] +
+                      copy[i - gridW - 1] + copy[i - gridW + 1] +
                       copy[i + gridW - 1] + copy[i + gridW + 1];
           arr[i] = copy[i] * invAmount + (sum / 12) * amount;
         }
@@ -861,11 +810,11 @@
     function resizeCanvas() {
       const rect = sculpture.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
-      
+
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = Math.max(320, Math.floor(rect.width * dpr));
       const h = Math.max(320, Math.floor(rect.height * dpr));
-      
+
       if (sculpture.width !== w || sculpture.height !== h) {
         sculpture.width = w;
         sculpture.height = h;
@@ -878,41 +827,41 @@
 
     // Interaction handlers
     sculpture.addEventListener("pointerdown", (event) => {
-      // 防止觸控預設行為 (防滑動干擾)
-      event.preventDefault(); 
+      event.preventDefault();
       if (!hasSculpture) return;
       sculpture.setPointerCapture(event.pointerId);
       const point = toCanvasPoint(event);
       drag = { lastX: point.x, lastY: point.y, startedAt: performance.now() };
+      cursorPos = { x: point.x, y: point.y };
       applyUnifiedTool(point.x, point.y, 0, 0, true);
     });
 
     sculpture.addEventListener("pointermove", (event) => {
-      // 確保滑鼠/手指移動時不會帶動網頁捲動
-      event.preventDefault(); 
+      event.preventDefault();
       if (!drag || !hasSculpture) return;
       const point = toCanvasPoint(event);
       const dx = point.x - drag.lastX;
       const dy = point.y - drag.lastY;
-      
-      // 停用旋轉，讓操作 100% 集中在「捏」的體驗上，避免畫面亂跑
-      // angle += dx * .0025; 
-      // tilt = Math.max(.48, Math.min(1.04, tilt + dy * .0005));
-      
+
       applyUnifiedTool(point.x, point.y, dx, dy, false);
-      
+
       drag.lastX = point.x;
       drag.lastY = point.y;
+      cursorPos = { x: point.x, y: point.y };
     });
 
     sculpture.addEventListener("pointerup", (event) => {
       event.preventDefault();
       drag = null;
+      cursorPos = null;
+      render();
     });
-    
+
     sculpture.addEventListener("pointercancel", (event) => {
       event.preventDefault();
       drag = null;
+      cursorPos = null;
+      render();
     });
 
     function toCanvasPoint(event) {
@@ -923,23 +872,22 @@
       };
     }
 
+    // ★ 改進的捏壓:加入體積守恆 (按下中心、外環微微鼓起),減少干擾性平滑
     function applyUnifiedTool(px, py, dx, dy, isPress) {
       const nearest = nearestGridPoint(px, py);
       if (!nearest) return;
-      
+
       const r = Number(ui.radius.value);
       const r2 = r * r;
-      // 放大工具的 power，讓手機上操作更有感
-      const power = (Number(ui.strength.value) / 100) * 1.5; 
-      
+      const power = (Number(ui.strength.value) / 100) * 1.8;
+
       const dist2 = dx * dx + dy * dy;
       const dist = Math.sqrt(dist2);
-      // 因應高解析度，調整動態範圍
-      const motion = Math.min(1, dist / 32);
-      
+      const motion = Math.min(1, dist / 28);
+
       const dirX = dist === 0 ? 0 : dx / dist;
       const dirY = dist === 0 ? 0 : dy / dist;
-      
+
       const yStart = Math.max(1, nearest.gy - r);
       const yEnd = Math.min(gridH - 1, nearest.gy + r);
       const xStart = Math.max(1, nearest.gx - r);
@@ -950,32 +898,46 @@
         for (let x = xStart; x < xEnd; x++) {
           const localX = x - nearest.gx;
           const localY = y - nearest.gy;
-          
+
           const d2 = localX * localX + localY * localY;
           if (d2 > r2) continue;
-          
+
           const d = Math.sqrt(d2);
-          const falloff = (Math.cos((d / r) * Math.PI) + 1) * 0.5;
+          const u = d / r; // 0 中心 → 1 邊緣
+
+          // 主要按壓 (鐘形曲線:中心最強,邊緣 0)
+          const press = (Math.cos(u * Math.PI) + 1) * 0.5;
+
+          // ★ 體積守恆:外環會微微鼓起 (sin 曲線在 u=0 與 u=1 時為 0,u=0.5 時為峰值)
+          const ringBulge = Math.sin(u * Math.PI);
+
           const i = rowOffset + x;
-          
-          const avg = (heights[i - 1] + heights[i + 1] + heights[i - gridW] + heights[i + gridW]) * 0.25;
+
+          // 行進方向的「前緣推擠」
           const front = localX * dirX + localY * dirY;
           const rim = Math.max(0, front / Math.max(1, r));
-          
-          const pressAmount = (isPress ? .17 : .11) * power * falloff;
-          const rimAmount = rim * motion * power * falloff * .14;
-          
+
+          const pressAmount = (isPress ? 0.22 : 0.14) * power * press;
+          const bulgeAmount = (isPress ? 0.07 : 0.045) * power * ringBulge;
+          const rimAmount = rim * motion * power * press * 0.16;
+
           heights[i] -= pressAmount;
+          heights[i] += bulgeAmount;
           heights[i] += rimAmount;
-          
-          const smoothing = falloff * (.08 + motion * .28);
-          heights[i] = heights[i] * (1 - smoothing) + avg * smoothing;
-          
-          velocity[i] -= power * falloff * .025;
-          velocity[i] += rim * motion * power * falloff * .016;
-          velocity[i] *= .96;
-          
-          heights[i] = Math.max(-.75, Math.min(1.35, heights[i]));
+
+          // ★ 大幅降低互動時的平滑量(從 .08 + motion*.28 → .04 + motion*.12)
+          // 保留更多用戶輸入細節,讓捏的痕跡看得見
+          const neighbors = (heights[i - 1] + heights[i + 1] + heights[i - gridW] + heights[i + gridW]) * 0.25;
+          const smoothing = press * (0.04 + motion * 0.12);
+          heights[i] = heights[i] * (1 - smoothing) + neighbors * smoothing;
+
+          // 賦予點上向下與向外的初速,讓回彈更有彈性
+          velocity[i] -= power * press * 0.032;
+          velocity[i] += ringBulge * power * 0.012;
+          velocity[i] += rim * motion * power * press * 0.018;
+          velocity[i] *= 0.95;
+
+          heights[i] = Math.max(-0.85, Math.min(1.45, heights[i]));
         }
       }
       render();
@@ -984,14 +946,14 @@
     function nearestGridPoint(px, py) {
       let best = null;
       let bestD2 = Infinity;
-      
-      for (let i = 0; i < totalPoints; i += 2) { 
+
+      for (let i = 0; i < totalPoints; i += 2) {
         const point = pointCache[i];
         if (!point) continue;
         const dx = point.x - px;
         const dy = point.y - py;
         const d2 = dx * dx + dy * dy;
-        
+
         if (d2 < bestD2) {
           bestD2 = d2;
           best = point;
@@ -1005,20 +967,18 @@
       if (!hasSculpture) return false;
       const spring = Number(ui.bounce.value) / 100;
       if (spring <= 0) return false;
-      
-      // 調整彈性係數與阻尼，讓它更像果凍一樣長時間震動 (低阻尼，即 damping 值高)
-      const k = .008 + spring * .042;
-      const damping = .80 + spring * .19; // 最高可達 0.99，帶來超強回彈感
+
+      const k = .010 + spring * .046;
+      const damping = .80 + spring * .19;
       let moving = false;
-      
+
       for (let i = 0; i < totalPoints; i++) {
         const diff = baseHeights[i] - heights[i];
         const force = diff * k;
         velocity[i] = (velocity[i] + force) * damping;
         heights[i] += velocity[i];
-        
-        // 降低靜止閾值，讓微小的果凍抖動能持續更久
-        if ((velocity[i] < 0 ? -velocity[i] : velocity[i]) > .00003 || 
+
+        if ((velocity[i] < 0 ? -velocity[i] : velocity[i]) > .00003 ||
             (diff < 0 ? -diff : diff) > .0003) {
           moving = true;
         }
@@ -1026,67 +986,65 @@
       return moving;
     }
 
+    // ★ 完全改寫的渲染函數:Phong-style 光照 + 真正的圓形 clip + 零 Y 軸位移
     function render(force = false) {
       if (!sculpture.width || !sculpture.height) return;
-      
-      ctx.fillStyle = "#111514";
+
+      // 背景
+      ctx.fillStyle = "#0f1413";
       ctx.fillRect(0, 0, sculpture.width, sculpture.height);
       drawBackdrop();
-      
+
       if (!hasSculpture && !force) return;
 
-      const scale = Math.min(sculpture.width, sculpture.height) * .0065;
-      const zScale = Number(ui.relief.value) * scale * .15;
+      // ★ 整體更大 (0.0078 → 0.0090),雕塑佔畫面更滿
+      const scale = Math.min(sculpture.width, sculpture.height) * .0090;
+      // ★ Y 軸視覺位移幾乎歸零 (.06 → .015),邊緣不會有階梯狀凸起
+      // 立體感 100% 由 Phong 光照承擔(像現代遊戲的 normal map 技術)
+      const visualZScale = Number(ui.relief.value) * scale * .015;
       const cx = sculpture.width * 0.5;
-      const cy = sculpture.height * 0.5 + sculpture.height * .02;
-      
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
+      const cy = sculpture.height * 0.5;
 
-      // 【遮蔽底盤優化】將顏色調為與果凍基礎亮度一致，完美融入雕塑邊緣
-      ctx.fillStyle = shadeColor(material, 0.12);
-      ctx.beginPath();
-      // 修正了之前圓盤在上下兩側突出的問題，現在尺寸會完美藏在黏土下方
-      ctx.ellipse(cx, cy, scale * gridW * 0.63, scale * gridH * 0.43 * tilt, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Update 3D points in cache
+      // ★ 雕塑半徑 — 一個明確的數字,後面 clip 和 cells 都用同一個
+      const sculptRadius = scale * gridW * 0.5 * 0.98;
+
+      // 投影到畫布:X、Y 軸完全同比例,正圓
       for (let y = 0; y < gridH; y++) {
         const ny = y - gridH * 0.5;
         const rowOffset = y * gridW;
         for (let x = 0; x < gridW; x++) {
           const nx = x - gridW * 0.5;
-          const rx = nx * cos - ny * sin;
-          const ry = nx * sin + ny * cos;
-          
           const idx = rowOffset + x;
           const h = heights[idx];
           const p = pointCache[idx];
-          
-          p.x = cx + rx * scale * 1.45;
-          p.y = cy + ry * scale * tilt - h * zScale;
+
+          p.x = cx + nx * scale;
+          p.y = cy + ny * scale - h * visualZScale;
           p.z = h;
-          p.depth = ry + h * 14;
+          p.depth = ny + h * 18;
         }
       }
 
-      // 建立圓形遮罩範圍（去除背景方框邊緣，讓它看起來像是不規則黏土塊）
+      // 軟陰影 (畫在主體下方,clip 之外)
+      drawSoftShadow(cx, cy + sculptRadius * 0.92, sculptRadius * 1.05);
+
+      // ★ 關鍵改動:用真實圓形 path 做 clip,所有 cells 在這個 clip 內渲染
+      // 邊緣由 Canvas 自身的抗鋸齒處理,完全平滑、沒有鋸齒輪廓
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, sculptRadius, 0, Math.PI * 2);
+      ctx.clip();
+
+      // 收集所有 cells(不再逐格判斷遮罩,讓 clip 處理邊界)
       let activeCellCount = 0;
       for (let y = 0; y < gridH - 1; y++) {
         const rowOffset = y * gridW;
         const nextRowOffset = (y + 1) * gridW;
         for (let x = 0; x < gridW - 1; x++) {
-          
-          // 計算中心距離，做為去背遮罩
+          // 只跳過明顯在圓外的格子(粗略加速,精細邊界交給 clip)
           const nx = (x - gridW * 0.5 + 0.5) / (gridW * 0.5);
           const ny = (y - gridH * 0.5 + 0.5) / (gridH * 0.5);
-          const r2 = nx*nx + ny*ny;
-          
-          // 加上一點點邊緣不規則形狀（模擬手工撕裂的黏土邊緣）
-          const borderNoise = Math.sin(Math.atan2(ny, nx) * 6) * 0.04;
-          const limit = 0.88 + borderNoise;
-          
-          if (r2 > limit * limit) continue; // 超過半徑的就不渲染（去背）
+          if (nx * nx + ny * ny > 1.05) continue;
 
           const c = cellsCache[activeCellCount++];
           c.p1 = pointCache[rowOffset + x];
@@ -1094,80 +1052,200 @@
           c.p3 = pointCache[nextRowOffset + x + 1];
           c.p4 = pointCache[nextRowOffset + x];
           c.depth = (c.p1.depth + c.p2.depth + c.p3.depth + c.p4.depth) * 0.25;
+          c.avgZ = (c.p1.z + c.p2.z + c.p3.z + c.p4.z) * 0.25;
         }
       }
-      
-      // 將沒用到的陣列元素推到最深處，避免影響 Sort 效能與視覺
+
       for (let i = activeCellCount; i < cellsCache.length; i++) {
         cellsCache[i].depth = 999999;
       }
-      
+
       cellsCache.sort((a, b) => a.depth - b.depth);
 
-      // Render cells (只渲染有效範圍內的)
+      // 光源計算
       const lightX = Number(ui.light.value) / 100;
+      const lightDirX = -0.55 + lightX * 0.85;
+      const lightDirY = -0.85;
+      const lightDirZ = 0.62;
+      const lightLen = Math.sqrt(lightDirX * lightDirX + lightDirY * lightDirY + lightDirZ * lightDirZ);
+      const lx = lightDirX / lightLen;
+      const ly = lightDirY / lightLen;
+      const lz = lightDirZ / lightLen;
+
+      // 半向量 H
+      const hx = lx * 0.5;
+      const hy = ly * 0.5;
+      const hz = (lz + 1) * 0.5;
+      const hLen = Math.sqrt(hx * hx + hy * hy + hz * hz);
+      const hxN = hx / hLen;
+      const hyN = hy / hLen;
+      const hzN = hz / hLen;
+
+      // ★ 法線強度再加強 (5.8 → 7.2),補償降低的位移,立體感更戲劇化
+      const normalStrength = 7.2 + Number(ui.relief.value) * 0.038;
+
+      ctx.lineWidth = 1.4;
+      ctx.lineJoin = 'round';
+
       for (let i = 0; i < activeCellCount; i++) {
         const cell = cellsCache[i];
-        
-        const gx = (cell.p2.z - cell.p1.z) + (cell.p3.z - cell.p4.z);
-        const gy = (cell.p4.z - cell.p1.z) + (cell.p3.z - cell.p2.z);
-        
-        const diffuse = -gx * (1.4 + lightX) + gy * .52 + .12;
-        const specular = Math.pow(Math.max(0, diffuse + 0.3), 5) * 0.45; 
-        const shade = Math.max(-.65, Math.min(.95, diffuse + specular));
-        
+
+        // 法線梯度 (兩條對角線平均,取得局部坡度)
+        const gx = ((cell.p2.z - cell.p1.z) + (cell.p3.z - cell.p4.z)) * 0.5 * normalStrength;
+        const gy = ((cell.p4.z - cell.p1.z) + (cell.p3.z - cell.p2.z)) * 0.5 * normalStrength;
+
+        // 法向量近似 N = (-gx, -gy, 1) / |N|
+        const nLenSq = gx * gx + gy * gy + 1;
+        const invNLen = 1 / Math.sqrt(nLenSq);
+        const nxN = -gx * invNLen;
+        const nyN = -gy * invNLen;
+        const nzN = invNLen;
+
+        // 漫反射 N·L
+        const NdotL = nxN * lx + nyN * ly + nzN * lz;
+        const diffuse = Math.max(0, NdotL);
+
+        // 鏡面反射 (Blinn-Phong) N·H,集中高光
+        const NdotH = Math.max(0, nxN * hxN + nyN * hyN + nzN * hzN);
+        const specular = Math.pow(NdotH, 28) * 0.55;
+
+        // 弱型環境遮蔽:深度為負(凹陷)的地方加深陰影
+        const ao = cell.avgZ < 0 ? cell.avgZ * 0.35 : 0;
+
+        // 邊緣襯托(rim light):法線越偏離 z 軸,越亮一點點(像果凍透光感)
+        const rim = (1 - nzN) * (1 - nzN) * 0.08;
+
+        // 組合最終色調
+        const ambient = -0.18;
+        const shade = ambient + diffuse * 0.78 + specular + ao + rim;
+
+        const clampedShade = Math.max(-0.72, Math.min(0.96, shade));
+        const fillColor = shadeColor(material, clampedShade);
+
         ctx.beginPath();
         ctx.moveTo(cell.p1.x, cell.p1.y);
         ctx.lineTo(cell.p2.x, cell.p2.y);
         ctx.lineTo(cell.p3.x, cell.p3.y);
         ctx.lineTo(cell.p4.x, cell.p4.y);
         ctx.closePath();
-        
-        // 移除 stroke，單純使用 fill 填色，解決嚴重卡頓問題
-        ctx.fillStyle = shadeColor(material, shade);
+        // ★ 同色 fill + stroke:讓格子接縫的鋸齒邊緣被自身顏色蓋掉,
+        // 視覺上會像一塊抗鋸齒的連續曲面,但完全不需要增加 grid 解析度
+        ctx.fillStyle = fillColor;
+        ctx.strokeStyle = fillColor;
         ctx.fill();
+        ctx.stroke();
       }
 
-      drawHighlights(activeCellCount);
+      // ★ Pass 2:在最亮的峰頂加一層極淡的高光 (果凍光澤感) — 仍在 clip 內
+      drawTopHighlights(activeCellCount);
+
+      // ★ 結束 clip,後面的指示器可以畫到圓外
+      ctx.restore();
+
+      // ★ Pass 3:加上一圈邊緣光暈,讓圓的輪廓有「微微透光」的果凍邊緣感
+      drawEdgeGlow(cx, cy, sculptRadius);
+
+      // ★ Pass 4:指尖位置指示器(畫在所有東西之上)
+      if (cursorPos && drag) {
+        drawCursorRing();
+      }
+    }
+
+    // ★ 新增:沿著雕塑邊緣繪製一圈非常淡的光暈,模擬果凍邊緣的次表面散射
+    function drawEdgeGlow(cx, cy, radius) {
+      ctx.save();
+      ctx.strokeStyle = `rgba(${material.r}, ${material.g}, ${material.b}, 0.45)`;
+      ctx.lineWidth = Math.max(1.5, radius * 0.012);
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius - ctx.lineWidth * 0.5, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 再加一圈更外更淡的光暈
+      ctx.strokeStyle = `rgba(${material.r}, ${material.g}, ${material.b}, 0.12)`;
+      ctx.lineWidth = Math.max(2, radius * 0.025);
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius + ctx.lineWidth * 0.3, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
     }
 
     function drawBackdrop() {
       const w = sculpture.width;
       const h = sculpture.height;
-      const grd = ctx.createRadialGradient(w * .52, h * .35, 20, w * .52, h * .35, w * .72);
-      grd.addColorStop(0, "#20251f");
-      grd.addColorStop(1, "#101313");
+      const grd = ctx.createRadialGradient(w * .52, h * .35, 20, w * .52, h * .42, w * .78);
+      grd.addColorStop(0, "#1e2620");
+      grd.addColorStop(0.7, "#121615");
+      grd.addColorStop(1, "#0a0d0c");
       ctx.fillStyle = grd;
       ctx.fillRect(0, 0, w, h);
-      
-      ctx.fillStyle = "rgba(230, 189, 114, .08)";
-      ctx.beginPath();
-      // 將陰影稍微往上拉，對應懸浮的感覺
-      ctx.ellipse(w * .5, h * .75, w * .32, h * .045, 0, 0, Math.PI * 2);
-      ctx.fill();
     }
 
-    // 移除原本的底座繪製函數 (drawBase)
-
-    function drawHighlights(activeCellCount) {
+    function drawSoftShadow(x, y, radius) {
       ctx.save();
-      ctx.globalAlpha = .17;
-      ctx.strokeStyle = "#fff4d8";
-      ctx.lineWidth = Math.max(1, sculpture.width / 1200);
-      
-      for (let i = 0; i < activeCellCount; i += 17) {
+      const grd = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      grd.addColorStop(0, "rgba(0, 0, 0, .35)");
+      grd.addColorStop(0.6, "rgba(0, 0, 0, .12)");
+      grd.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.ellipse(x, y, radius, radius * 0.18, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawTopHighlights(activeCellCount) {
+      ctx.save();
+      ctx.globalAlpha = 0.05;
+      ctx.fillStyle = "#fff6e0";
+      for (let i = 0; i < activeCellCount; i++) {
         const c = cellsCache[i];
-        if (c.p1.z < .42) continue;
+        // ★ 門檻拉很高 (0.6 → 0.8),只在真正凸起的部分閃光,避免到處都是亮斑
+        if (c.avgZ < 0.8) continue;
         ctx.beginPath();
-        ctx.moveTo((c.p1.x + c.p4.x) * 0.5, (c.p1.y + c.p4.y) * 0.5);
-        ctx.lineTo((c.p2.x + c.p3.x) * 0.5, (c.p2.y + c.p3.y) * 0.5);
-        ctx.stroke();
+        ctx.moveTo(c.p1.x, c.p1.y);
+        ctx.lineTo(c.p2.x, c.p2.y);
+        ctx.lineTo(c.p3.x, c.p3.y);
+        ctx.lineTo(c.p4.x, c.p4.y);
+        ctx.closePath();
+        ctx.fill();
       }
       ctx.restore();
     }
 
+    // ★ 新增:繪製操作位置的環形指示器,讓使用者清楚知道捏的範圍
+    function drawCursorRing() {
+      if (!cursorPos) return;
+      const r = Number(ui.radius.value);
+      const scale = Math.min(sculpture.width, sculpture.height) * .0072 * 1.45;
+      const visualR = r * scale;
+
+      ctx.save();
+      // 內圈柔光
+      const grd = ctx.createRadialGradient(cursorPos.x, cursorPos.y, 0, cursorPos.x, cursorPos.y, visualR);
+      grd.addColorStop(0, "rgba(255, 245, 220, 0.18)");
+      grd.addColorStop(0.7, "rgba(255, 245, 220, 0.04)");
+      grd.addColorStop(1, "rgba(255, 245, 220, 0)");
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(cursorPos.x, cursorPos.y, visualR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 外環細線
+      ctx.strokeStyle = "rgba(255, 240, 210, 0.55)";
+      ctx.lineWidth = Math.max(1.5, sculpture.width / 700);
+      ctx.beginPath();
+      ctx.arc(cursorPos.x, cursorPos.y, visualR, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
     function downloadImage() {
+      // 下載前暫時清掉指示器
+      const tmpCursor = cursorPos;
+      cursorPos = null;
       render(true);
+      cursorPos = tmpCursor;
+
       const link = document.createElement("a");
       link.download = "healing-sculpture.png";
       link.href = sculpture.toDataURL("image/png");
@@ -1178,7 +1256,7 @@
 
     function shadeColor(rgb, shade) {
       const amount = shade >= 0 ? 255 : 0;
-      const mix = shade < 0 ? -shade : shade; 
+      const mix = shade < 0 ? -shade : shade;
       return `rgb(${Math.round(rgb.r + (amount - rgb.r) * mix)}, ${Math.round(rgb.g + (amount - rgb.g) * mix)}, ${Math.round(rgb.b + (amount - rgb.b) * mix)})`;
     }
 
@@ -1194,13 +1272,8 @@
     function animate() {
       if (hasSculpture) {
         const moving = tickElasticity();
-        
-        // 停止自動旋轉
-        // if (!drag) angle += .0014;
-        
-        // 效能優化：既然不會自動旋轉了，只有在黏土回彈 (moving) 時才需要重新渲染
-        if (moving) {
-           render();
+        if (moving || drag) {
+          render();
         }
       }
       requestAnimationFrame(animate);
